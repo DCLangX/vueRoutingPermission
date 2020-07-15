@@ -5,7 +5,8 @@ import { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   name: '',
-  avatar: ''
+  avatar: '',
+  role: ''
 }
 
 const mutations = {
@@ -17,6 +18,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLE: (state, role) => {
+    state.role = role
   }
 }
 
@@ -49,9 +53,10 @@ const actions = {
             reject('Verification failed, please Login again.')
           }
 
-          const { name, avatar } = data
+          const { name, avatar, role } = data
 
           commit('SET_NAME', name)
+          commit('SET_ROLE', role)
           commit('SET_AVATAR', avatar)
           resolve(data)
         })
@@ -67,6 +72,8 @@ const actions = {
       logout(state.token)
         .then(() => {
           commit('SET_TOKEN', '')
+          commit('SET_NAME', '')
+          commit('SET_AVATAR', '')
           removeToken()
           resetRouter()
           resolve()

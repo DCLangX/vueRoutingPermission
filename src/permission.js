@@ -28,12 +28,19 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
-        next()
+        const allowRoles = to.meta.roles
+        const userRole = store.getters.role
+        console.log(to.fullPath, allowRoles, userRole)
+        if (allowRoles.includes(userRole)) {
+          next()
+        } else {
+          next('/404')
+        }
       } else {
         try {
           // get user info
           await store.dispatch('user/getInfo')
-          next()
+          next(to.fullPath)
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
