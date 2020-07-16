@@ -65,23 +65,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: {
-          title: '管理员可见',
-          icon: 'table',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-
-  {
     path: '/form',
     component: Layout,
     children: [
@@ -107,11 +90,32 @@ export const constantRoutes = [
         meta: { title: 'External Link', icon: 'link' }
       }
     ]
-  },
+  }
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
+
+export const adminRoutes = [
+  {
+    path: '/example',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: {
+          title: '管理员可见',
+          icon: 'table',
+          roles: ['admin']
+        }
+      }
+    ]
+  }
+]
+
+export const endRoutes = [{ path: '*', redirect: '/404', hidden: true }]
 
 const createRouter = () =>
   new Router({
@@ -126,6 +130,8 @@ const router = createRouter()
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
+  router.options.routes = constantRoutes
+  console.log('进入路由执行清空', newRouter)
 }
 
 export default router

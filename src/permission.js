@@ -1,4 +1,4 @@
-import router from './router'
+import router, { adminRoutes, endRoutes } from './router'
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -28,22 +28,28 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
-        const allowRoles = to.meta.roles
-        const userRole = store.getters.role
-        console.log(to.fullPath, allowRoles, userRole)
-        if (allowRoles.includes(userRole)) {
-          next()
-        } else {
-          next('/404')
-        }
+        // const allowRoles = to.meta.roles
+        // const userRole = store.getters.role
+        // console.log(to.fullPath, allowRoles, userRole)
+        // if (allowRoles.includes(userRole)) {
+        next()
+        // } else {
+        //   next('/404')
+        // }
       } else {
         try {
           // get user info
           await store.dispatch('user/getInfo')
+          const userRole = store.getters.role
+          console.log('添加前路由', router.options.routes)
+          const addRoutes = userRole === 'admin' ? [...adminRoutes, ...endRoutes] : endRoutes
+          router.addRoutes(addRoutes)
+          router.options.routes = router.options.routes.concat(addRoutes)
+          console.log('添加后路由', router.options.routes)
           next(to.fullPath)
         } catch (error) {
           // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
+          await store.dispatch('user/logout')
           Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
