@@ -1,5 +1,5 @@
 # 基于vue-admin-template修改的自用基础后台
-
+##此为通过addRoutes的方式添加路由
 ## Project setup
 ```
 yarn install
